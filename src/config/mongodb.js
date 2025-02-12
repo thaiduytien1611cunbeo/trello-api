@@ -1,13 +1,10 @@
-const MONGODB_URL =
-  "mongodb+srv://thaiduytien:16112004@cluster0.2c2os.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-
-const DATABASE_NAME = "trello-duytien-mernstack";
+import { env } from "./environment";
 
 const { MongoClient, ServerApiVersion } = require("mongodb");
 
 let trelloDatabaseInstance = null;
 
-const mongoClientInstance = new MongoClient(MONGODB_URL, {
+const mongoClientInstance = new MongoClient(env.MONGODB_URL, {
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,
@@ -18,7 +15,7 @@ const mongoClientInstance = new MongoClient(MONGODB_URL, {
 
 export const CONNECT_DB = async () => {
   await mongoClientInstance.connect();
-  trelloDatabaseInstance = mongoClientInstance.db(DATABASE_NAME);
+  trelloDatabaseInstance = mongoClientInstance.db(env.DATABASE_NAME);
 };
 
 export const GET_DB = () => {
