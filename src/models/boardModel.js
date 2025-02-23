@@ -1,11 +1,3 @@
-<<<<<<< HEAD
-import Joi, { date } from "joi";
-import { ObjectId } from "mongodb";
-import { GET_DB } from "~/config/mongodb";
-
-//Define Collection
-const BOARD_COLLECTION_NAME = "boards";
-=======
 import Joi from 'joi'
 import { ObjectId } from 'mongodb'
 import { GET_DB } from '~/config/mongodb'
@@ -15,40 +7,10 @@ import { cardModel } from './cardModel'
 
 //Define Collection
 const BOARD_COLLECTION_NAME = 'boards'
->>>>>>> 7a8944e (update api column and card)
 const BOARD_COLLECTION_SCHEMA = Joi.object({
   title: Joi.string().required().min(3).max(50).trim().strict(),
   slug: Joi.string().required().min(3).trim().strict(),
   description: Joi.string().required().min(3).max(250).trim().strict(),
-<<<<<<< HEAD
-
-  columnOrderIds: Joi.array().items(Joi.string()).default([]),
-
-  createdAt: Joi.date().timestamp("javascript").default(Date.now),
-  updatedAt: Joi.date().timestamp("javascript").default(null),
-  _destroy: Joi.boolean().default(false),
-});
-
-const validate = async (data) => {
-  return await BOARD_COLLECTION_SCHEMA.validateAsync(data, {
-    abortEarly: true,
-  });
-};
-
-const createNew = async (data) => {
-  try {
-    const validData = await validate(data);
-    const createdBoard = await GET_DB()
-      .collection(BOARD_COLLECTION_NAME)
-      .insertOne(validData);
-    return createdBoard;
-  } catch (error) {
-    throw new Error(error);
-  }
-};
-
-const findOneById = async (id) => {
-=======
   type: Joi.string().valid(BOARD_TYPE.PUBLIC, BOARD_TYPE.PRIVATE).required(),
 
   columnOrderIds: Joi.array().items(Joi.string()).default([]),
@@ -78,46 +40,10 @@ const createNew = async data => {
 }
 
 const findOneById = async id => {
->>>>>>> 7a8944e (update api column and card)
   try {
     const res = await GET_DB()
       .collection(BOARD_COLLECTION_NAME)
       .findOne({
-<<<<<<< HEAD
-        _id: new ObjectId(id),
-      });
-    return res;
-  } catch (error) {
-    throw new Error(error);
-  }
-};
-
-const findAll = async (id) => {
-  try {
-    const res = await GET_DB().collection(BOARD_COLLECTION_NAME).find({});
-    console.log(res.toArray());
-
-    return res;
-  } catch (error) {
-    throw new Error(error);
-  }
-};
-
-const getDetails = async (boardId) => {
-  try {
-    const res = await GET_DB()
-      .collection(BOARD_COLLECTION_NAME)
-      .findOne({
-        _id: new ObjectId(boardId),
-      });
-    console.log(res);
-
-    return res;
-  } catch (error) {
-    throw new Error(error);
-  }
-};
-=======
         _id: new ObjectId(id)
       })
     return res
@@ -196,7 +122,6 @@ const update = async (boardId, updateData) => {
     console.log(error)
   }
 }
->>>>>>> 7a8944e (update api column and card)
 
 export const boardModel = {
   BOARD_COLLECTION_NAME,
@@ -204,10 +129,6 @@ export const boardModel = {
   createNew,
   findOneById,
   getDetails,
-<<<<<<< HEAD
-};
-=======
   pushColumnOrderIds,
   update
 }
->>>>>>> 7a8944e (update api column and card)
