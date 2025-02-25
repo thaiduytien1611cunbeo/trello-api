@@ -39,12 +39,12 @@ const createNew = async data => {
   }
 }
 
-const findOneById = async id => {
+const findOneById = async boardId => {
   try {
     const res = await GET_DB()
       .collection(BOARD_COLLECTION_NAME)
       .findOne({
-        _id: new ObjectId(id)
+        _id: new ObjectId(boardId)
       })
     return res
   } catch (error) {
@@ -90,6 +90,7 @@ const getDetails = async boardId => {
 }
 
 // push 1 giá trị id vào cuối mảng columnOrderIds
+// Dùng $push trong mongoDb ở trường hợp này để lấy một phần tử ra khỏi mảng rồi xóa điđi
 const pushColumnOrderIds = async column => {
   try {
     const result = await GET_DB()
@@ -99,7 +100,23 @@ const pushColumnOrderIds = async column => {
         { $push: { columnOrderIds: new ObjectId(column._id) } },
         { returnDocument: 'after' }
       )
+    return result
+  } catch (error) {
+    console.log(error)
+  }
+}
 
+// Lấy 1 phần tử columnId ra khỏi mảng columnOrderIds
+// Dùng $pull trong mongoDb ở trường hợp này để lấy một phần tử ra khỏi mảng rồi xóa điđi
+const pullColumnOrderIds = async column => {
+  try {
+    const result = await GET_DB()
+      .collection(BOARD_COLLECTION_NAME)
+      .findOneAndUpdate(
+        { _id: new ObjectId(column.boardId) },
+        { $pull: { columnOrderIds: new ObjectId(column._id) } },
+        { returnDocument: 'after' }
+      )
     return result
   } catch (error) {
     console.log(error)
@@ -112,6 +129,10 @@ const update = async (boardId, updateData) => {
     Object.keys(updateData).forEach(fieldName => {
       if (INVALID_UPDATE_FIELDS.includes(fieldName)) delete updateData[fieldName]
     })
+
+    // convert các data cần có dạng objectId ở đây
+    if (updateData.columnOrderIds)
+      updateData.columnOrderIds = updateData.columnOrderIds.map(_id => new ObjectId(_id))
 
     const result = await GET_DB()
       .collection(BOARD_COLLECTION_NAME)
@@ -130,5 +151,6 @@ export const boardModel = {
   findOneById,
   getDetails,
   pushColumnOrderIds,
+  pullColumnOrderIds,
   update
 }
